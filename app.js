@@ -64,3 +64,5 @@ mongoose.connect(process.env.DB_PASSWORD).then(()=> {
 }).catch((e)=> {
   console.log(`Error While Connecting DataBase ${e}`);
 })
+
+export default app;
