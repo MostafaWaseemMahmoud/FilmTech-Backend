@@ -47,7 +47,7 @@ export const getAllUsers = async (req,res)=> {
 export const getIdUser = async (req,res)=> {
   try {
     const id  = req.params.id;
-  const user = await userSchema.find({ id });
+  const user = await userSchema.findById(id);
 
   if(!id) {
     return res.status(404).json("Id Param Is Required")
@@ -55,7 +55,7 @@ export const getIdUser = async (req,res)=> {
   if(!user){
     return res.status(404).json("No User With It Id")
   }
-  return res.status(200).json(user);
+  return res.status(200).json({user:user});
   } catch (error) {
     return res.status(500).json(`Error While Getting User By It Id => ${error}`)
   }
