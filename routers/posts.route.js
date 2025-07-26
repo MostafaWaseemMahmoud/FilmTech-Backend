@@ -25,7 +25,7 @@ const upload = multer({
 // Route definition
 
 router.post("/addpost/:id" , upload.single('filmimage') , addPost)
-router.post("/likepost/:postid"  , likePost)
+router.post("/likepost/:postid/:userid"  , likePost)
 router.post("/commentpost/:postid/:userid"  , commentPost)
 
 export default router;

@@ -36,7 +36,7 @@ export const addPost = async(req,res)=> {
     category:category,
     filmimage: filmimage,
     comments: [],
-    likes: 0,
+    likes: [],
   }
 
   foundUser.posts.push(newPost)
@@ -53,34 +53,41 @@ export const addPost = async(req,res)=> {
 export const likePost = async (req, res) => {
   try {
     const postid = Number(req.params.postid);
-    const allUsers = await userSchema.find();
+    const userid = req.params.userid;
 
-    let userOfPost = null;
-    let updatedPost = null;
+    // دور على المستخدم اللي عنده البوست ده مباشرة
+    const user = await userSchema.findOne({ "posts.id": postid });
 
-    for (let user of allUsers) {
-      for (let post of user.posts) {
-        if (post.id === postid) {
-          post.likes += 1;
-          userOfPost = user;
-          updatedPost = post;
-          break; //
-        }
-      }
-      if (userOfPost) break; // خرج من لوب اليوزرات بعد ما لقى البوست
-    }
-
-    if (!userOfPost) {
+    if (!user) {
       return res.status(404).json({ message: "Post Not Found" });
     }
 
-    await userOfPost.save();
+    // لاقي البوست
+    const post = user.posts.find((p) => p.id === postid);
 
-    return res.status(200).json({ message: "Post Has Been Updated", post: updatedPost });
+    // تحقق إن البوست موجود
+    if (!post) {
+      return res.status(404).json({ message: "Post Not Found In User" });
+    }
+
+    // ازود اللايك
+    const likinguser = userSchema.findById(userid);
+    post.likes.push(likinguser._id);
+
+    await user.save();
+
+    return res.status(200).json({
+      message: "Post Has Been Updated",
+      post: post,
+    });
   } catch (error) {
-    return res.status(500).json({ message: "Error While Adding Like to Post", error });
+    return res.status(500).json({
+      message: "Error While Adding Like to Post",
+      error,
+    });
   }
 };
+
 
 
 export const commentPost = async(req,res)=> {
