@@ -82,8 +82,8 @@ export const likePost = async (req, res) => {
     });
   } catch (error) {
     return res.status(500).json({
-      message: "Error While Adding Like to Post",
-      error,
+      message: "Error While Adding Like to Post ('-|-')",
+      error:error
     });
   }
 };
