@@ -71,8 +71,7 @@ export const likePost = async (req, res) => {
     }
 
     // ازود اللايك
-    const likinguser = userSchema.findById(userid);
-    post.likes.push(likinguser._id);
+    post.likes.push(userid);
 
     await user.save();
 
