@@ -70,14 +70,18 @@ export const likePost = async (req, res) => {
     const hasLiked = post.likes.includes(userid);
 
     if (hasLiked) {
-      await user.save();
       return res.status(200).json({
-        message: "You Has Already Liked The Post ",
+        message: "You Have Already Liked The Post",
       });
     } else {
-      // لو مش عامل لايك -> نضيفه
+      // إضافة اللايك
       post.likes.push(userid);
+
+      // إبلاغ mongoose إن حصل تعديل على likes داخل post
+      post.markModified("likes");
+
       await user.save();
+
       return res.status(200).json({
         message: "Like Added",
         post,
