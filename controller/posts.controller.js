@@ -55,34 +55,41 @@ export const likePost = async (req, res) => {
     const postid = Number(req.params.postid);
     const userid = req.params.userid;
 
-    // دور على المستخدم اللي عنده البوست ده مباشرة
     const user = await userSchema.findOne({ "posts.id": postid });
 
     if (!user) {
       return res.status(404).json({ message: "Post Not Found" });
     }
 
-    // لاقي البوست
     const post = user.posts.find((p) => p.id === postid);
 
-    // تحقق إن البوست موجود
     if (!post) {
       return res.status(404).json({ message: "Post Not Found In User" });
     }
 
-    // ازود اللايك
-    post.likes.push(userid);
+    const hasLiked = post.likes.includes(userid);
 
-    await user.save();
-
-    return res.status(200).json({
-      message: "Post Has Been Updated",
-      post: post,
-    });
+    if (hasLiked) {
+      // لو المستخدم عامل لايك قبل كده -> نشيله (Unlike)
+      post.likes = post.likes.filter((id) => id !== userid);
+      await user.save();
+      return res.status(200).json({
+        message: "Like Removed",
+        post,
+      });
+    } else {
+      // لو مش عامل لايك -> نضيفه
+      post.likes.push(userid);
+      await user.save();
+      return res.status(200).json({
+        message: "Like Added",
+        post,
+      });
+    }
   } catch (error) {
     return res.status(500).json({
-      message: "Error While Adding Like to Post ('-|-')",
-      error:error
+      message: "Error While Toggling Like",
+      error: error.message,
     });
   }
 };
