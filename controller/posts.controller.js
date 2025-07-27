@@ -70,12 +70,9 @@ export const likePost = async (req, res) => {
     const hasLiked = post.likes.includes(userid);
 
     if (hasLiked) {
-      // لو المستخدم عامل لايك قبل كده -> نشيله (Unlike)
-      post.likes = post.likes.filter((id) => id !== userid);
       await user.save();
       return res.status(200).json({
-        message: "Like Removed",
-        post,
+        message: "You Has Already Liked The Post ",
       });
     } else {
       // لو مش عامل لايك -> نضيفه
@@ -88,7 +85,7 @@ export const likePost = async (req, res) => {
     }
   } catch (error) {
     return res.status(500).json({
-      message: "Error While Toggling Like",
+      message: "Error While Adding Like",
       error: error.message,
     });
   }
