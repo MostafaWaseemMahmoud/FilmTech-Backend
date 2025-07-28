@@ -72,6 +72,7 @@ export const likePost = async (req, res) => {
     if (hasLiked) {
       return res.status(200).json({
         message: "You Have Already Liked The Post",
+        post,
       });
     } else {
       // إضافة اللايك
@@ -134,7 +135,7 @@ try {
     if (!userOfPost) {
       return res.status(404).json({ message: "Post Not Found" });
     }
-
+      post.markModified("comments");
     await userOfPost.save();
 
     return res.status(200).json({ message: "Post Has Been Updated", post: updatedPost });
