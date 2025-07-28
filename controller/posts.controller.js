@@ -104,7 +104,7 @@ try {
     const postid = Number(req.params.postid);
     const userid = req.params.userid;
     const allUsers = await userSchema.find();
-    const { comment } = req.body
+    const comment  = req.body.comment
     let userOfPost = null;
 
     let updatedPost = null;
@@ -135,7 +135,8 @@ try {
     if (!userOfPost) {
       return res.status(404).json({ message: "Post Not Found" });
     }
-      post.markModified("comments");
+
+    updatedPost.markModified("comments");
     await userOfPost.save();
 
     return res.status(200).json({ message: "Post Has Been Updated", post: updatedPost });
